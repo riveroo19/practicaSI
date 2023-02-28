@@ -1,6 +1,7 @@
 import sqlite3
 import csv
 
+
 def sql_create_alertas(con,cursorObj):
     cursorObj.execute("CREATE TABLE IF NOT EXISTS alertas (timestamp datetime, sid int, msg text, clasificacion text, prioridad int, protocolo text, origen text, destino text, puerto int)")
     con.commit()
