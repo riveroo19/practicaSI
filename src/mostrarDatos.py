@@ -7,7 +7,7 @@ def sql_fetch(cursorObj):
       print(row)
 
 #CONEXION BASE DATOS
-con = sqlite3.connect("./database.db")
+con = sqlite3.connect("../database.db")
 cursorObj = con.cursor()
 
 sql_fetch(cursorObj)
