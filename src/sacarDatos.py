@@ -27,7 +27,7 @@ sql_create_alertas(con,cursorObj)
 
 #LEER ARCHIVO CSV
 i=0
-with open('alerts.csv', newline='') as File:  
+with open('../alerts.csv', newline='') as File:  
     reader = csv.reader(File)
     for row in reader:
         if i!=0:
