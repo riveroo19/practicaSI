@@ -60,6 +60,21 @@ def media_desviacion_VulnerabilidadesDetectadas(dataframeVulnerabilidades):
     return media, desviacion
 
 #VALOR MINIMO Y MAXIMO DEL TOTAL DE PUERTOS ABIERTOS
+def min_max_puertos_abiertos(dataframe_puertos):
+    minimo = -1
+    maximo = -1
+    for i in range(0,len(dataframeAnalisis)):
+        fila = dataframeAnalisis['puertos_abiertos'][i]
+        puertos = stringToPorts(fila)
+        for puerto in puertos:
+            split = puerto.split("/")
+            numero_puerto = int(split[0])
+            if minimo == -1: minimo = numero_puerto
+            elif numero_puerto<minimo: minimo = numero_puerto
+            if maximo == -1: maximo = numero_puerto
+            elif numero_puerto>maximo: maximo=numero_puerto
+    return minimo, maximo
+        
 #VALOR MINIMO Y MAXIMO DEL NUMERO DE VULNERABILIDADES DETECTADAS
 
 
@@ -85,4 +100,8 @@ mediaVulnerabilidades, desviacionVulnerabilidades = media_desviacion_Vulnerabili
 print("MEDIA VULNERABILIDADES DETECTADAS => " + str(mediaVulnerabilidades))
 print("DESVIACION ESTANDAR VULNERABILIDADES DETECTADAS => " + str(desviacionVulnerabilidades))
 
+#MAXIMO Y MINIMO PUERTOS
+minimoPuerto, maximoPuerto = min_max_puertos_abiertos(dataframeAnalisis)
+print("PUERTO MINIMO => " + str(minimoPuerto))
+print("PUERTO MAXIMO => " + str(maximoPuerto))
 con.close()
