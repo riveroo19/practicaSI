@@ -76,7 +76,16 @@ def min_max_puertos_abiertos(dataframe_puertos):
     return minimo, maximo
         
 #VALOR MINIMO Y MAXIMO DEL NUMERO DE VULNERABILIDADES DETECTADAS
-
+def min_max_vulnerabilidades_detectadas(dataframeVulnerabilidades):
+    minimo = -1
+    maximo = -1
+    for i in range(0,len(dataframeVulnerabilidades)):
+        vulnerabilidades =dataframeVulnerabilidades['vulnerabilidades_detectadas'][i]
+        if minimo == -1: minimo = vulnerabilidades
+        elif vulnerabilidades<minimo: minimo = vulnerabilidades
+        if maximo == -1: maximo = vulnerabilidades
+        elif vulnerabilidades>maximo: maximo=vulnerabilidades
+    return minimo, maximo
 
 #CONEXION BASE DATOS
 con = sqlite3.connect("../database.db")
@@ -104,4 +113,11 @@ print("DESVIACION ESTANDAR VULNERABILIDADES DETECTADAS => " + str(desviacionVuln
 minimoPuerto, maximoPuerto = min_max_puertos_abiertos(dataframeAnalisis)
 print("PUERTO MINIMO => " + str(minimoPuerto))
 print("PUERTO MAXIMO => " + str(maximoPuerto))
+
+#MAXIMO Y MINIMO VULNERABILIDADES
+minimoVulnerabilidades, maximoVulnerabilidades = min_max_vulnerabilidades_detectadas(dataframeVulnerabilidades)
+print("VULNERABILIDADES MINIMAS => " + str(minimoVulnerabilidades))
+print("VULNERABILIDADES MAXIMAS => " + str(maximoVulnerabilidades))
+
+#CERRAR CONEXION
 con.close()
