@@ -27,19 +27,19 @@ def numeroAlertas(dataframeAlertas):
 #MEDIA Y DESVIACION ESTANDAR DEL TOTAL DE PUERTOS ABIERTOS
 def media_desviacion_PuertosAbiertos(dataframePuertos):
     contadorPuertos = 0
-    for i in range(0,len(dataframeAnalisis)):
-        fila = dataframeAnalisis['puertos_abiertos'][i]
+    for i in range(0,len(dataframePuertos)):
+        fila = dataframePuertos['puertos_abiertos'][i]
         puertos = stringToPorts(fila)
         contadorPuertos += len(puertos)
     media = contadorPuertos/len(dataframePuertos)
 
     acumulador = 0
-    for i in range(0,len(dataframeAnalisis)):
-        fila = dataframeAnalisis['puertos_abiertos'][i]
+    for i in range(0,len(dataframePuertos)):
+        fila = dataframePuertos['puertos_abiertos'][i]
         puertos = stringToPorts(fila)
         acumulador += (len(puertos) - media)**2
 
-    varianza = acumulador / len(dataframeAnalisis)
+    varianza = acumulador / len(dataframePuertos)
     desviacion = math.sqrt(varianza)
     return media, desviacion
 #MEDIA Y DESVIACION ESTANDAR DEL NUMERO DE VULNERABILIDADES DETECTADAS
@@ -63,8 +63,8 @@ def media_desviacion_VulnerabilidadesDetectadas(dataframeVulnerabilidades):
 def min_max_puertos_abiertos(dataframe_puertos):
     minimo = -1
     maximo = -1
-    for i in range(0,len(dataframeAnalisis)):
-        fila = dataframeAnalisis['puertos_abiertos'][i]
+    for i in range(0,len(dataframe_puertos)):
+        fila = dataframe_puertos['puertos_abiertos'][i]
         puertos = stringToPorts(fila)
         for puerto in puertos:
             split = puerto.split("/")
