@@ -13,7 +13,6 @@ def giga_query_prioridad(con):
     #print(df, "\n")
     print("Los id de los unicos dispositivos que forman parte de una alerta son: ", df['id'].unique(),"\n")
 
-
     print("AGRUPACIONES POR PRIORIDADES\n")
     
     #ver el número de observaciones total (con esto vemos que para las alertas de distinta prioridad, ha habido x número de alertas que han encontrado vulnerabilidades)
@@ -26,6 +25,11 @@ def giga_query_prioridad(con):
     WHERE msg LIKE '%issing%' OR localizacion LIKE 'None' OR puertos_abiertos LIKE 'None' GROUP BY prioridad
     ''', con)#puertos abiertos, localizacion y msg son los únicos que toman esos valores de los dispositivos, en alertas es missing por el mensaje
     print("\nNumero de campos con valor missing o None:\n",df_missings)
+    #alternativa:
+    df2 = pd.read_sql_query('''
+    SELECT prioridad, COUNT(*) FROM alertas WHERE origen NOT IN (SELECT ip FROM devices) AND destino NOT IN (SELECT ip FROM devices) GROUP BY prioridad
+    ''', con)
+    print("\nNúmero de alertas en las que los dispositivos registrados no \"participan\"\n", df2)
 
     #media 
     media = grouped['vulnerabilidades_detectadas'].mean()
@@ -68,6 +72,12 @@ def giga_query_meses(con):
     ''', con)#puertos abiertos, localizacion y msg son los únicos que toman esos valores de los dispositivos, en alertas es missing por el mensaje
     df_missings = df_missings.drop(df_missings[df_missings['Month'] == '09'].index)
     print("\nNumero de campos con valor missing o None:\n",df_missings)
+    #alternativa:
+    df2 = pd.read_sql_query('''
+    SELECT strftime('%m', timestamp) as Month, COUNT(*) FROM alertas WHERE origen NOT IN (SELECT ip FROM devices) AND destino NOT IN (SELECT ip FROM devices) GROUP BY strftime("%m-%Y", timestamp)
+    ''', con)
+    #df2 = df2.drop(df2[df2['Month'] == '09'].index)
+    print("\nNúmero de alertas en las que los dispositivos registrados no \"participan\"\n", df2)
     
     #media 
     media = grouped['vulnerabilidades_detectadas'].mean()
@@ -89,5 +99,5 @@ def giga_query_meses(con):
 
 con = sqlite3.connect("../database.db")
 
-giga_query_prioridad(con)
+#giga_query_prioridad(con)
 giga_query_meses(con)
