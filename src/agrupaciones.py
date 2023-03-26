@@ -5,8 +5,6 @@ import sqlite3
 #primeramente hay que considerar que las vulnerabilidades están en la tabla analisis, que tiene una foreign key procedente de la tabla devices, que a su vez se puede relacionar con 
 #la tabla alertas por su campo ip origen e ip destino, luego habrá que unir las 3 tablas y hacer la consulta de los diferentes campos sobre ella.
 
-#generaremos un dataframe que se corresponda con la tabla resultante de los join
-
 
 def giga_query_prioridad(con):
     df = pd.read_sql_query('''
@@ -22,6 +20,12 @@ def giga_query_prioridad(con):
     grouped = df.groupby(['prioridad'])
     n_registros = grouped.size()
     print("Número de alertas categorizadas por su prioridad en donde uno de los 2 dispositivos que participan tiene vulnerabilidades:\n", n_registros)
+    #numero de missing (alerta)
+    df_missings = pd.read_sql_query('''
+    SELECT COUNT(*) FROM devices JOIN alertas ON alertas.origen=devices.ip OR alertas.destino=devices.ip JOIN analisis ON analisis.id_device=devices.id
+    WHERE msg LIKE '%issing%' OR localizacion LIKE 'None' OR puertos_abiertos LIKE 'None' GROUP BY prioridad
+    ''', con)#puertos abiertos, localizacion y msg son los únicos que toman esos valores de los dispositivos, en alertas es missing por el mensaje
+    print("\nNumero de campos con valor missing o None:\n",df_missings)
 
     #media 
     media = grouped['vulnerabilidades_detectadas'].mean()
@@ -52,12 +56,38 @@ def giga_query_meses(con):
     fin_agosto = pd.to_datetime('2022-09-01 00:00:00') - pd.Timedelta(seconds=1)
     df_rango = df.loc[df['timestamp'].between(inicio_julio, fin_agosto)]
 
+    #numero de observaciones
     grouped = df_rango.groupby(pd.Grouper(key='timestamp', freq='MS'))
     n_registros = grouped.size()
-    print(n_registros)
+    print("\nEl numero de observaciones es:\n",n_registros)
+
+    #numeros de missing (alerta)
+    df_missings = pd.read_sql_query('''
+    SELECT strftime('%m', timestamp) as Month, COUNT(*) FROM devices JOIN alertas ON alertas.origen=devices.ip OR alertas.destino=devices.ip JOIN analisis ON analisis.id_device=devices.id
+    WHERE msg LIKE '%issing%' OR localizacion LIKE 'None' OR puertos_abiertos LIKE 'None' AND timestamp <= "2022-08-31 23:59:59" GROUP BY strftime("%m-%Y", timestamp) 
+    ''', con)#puertos abiertos, localizacion y msg son los únicos que toman esos valores de los dispositivos, en alertas es missing por el mensaje
+    df_missings = df_missings.drop(df_missings[df_missings['Month'] == '09'].index)
+    print("\nNumero de campos con valor missing o None:\n",df_missings)
+    
+    #media 
+    media = grouped['vulnerabilidades_detectadas'].mean()
+    print("\nLa media es:\n",media) #valores muy similares: muchas tuplas cuyo dispositivo origen/destino perteneciente a la tabla devices tiene 15 vulnerabilidades
+
+    #mediana
+    mediana = grouped['vulnerabilidades_detectadas'].median()
+    print("\nLa mediana es:\n",mediana)
+
+    #varianza
+    varianza = grouped['vulnerabilidades_detectadas'].var()
+    print("\nLa varianza es:\n", varianza)
+    #maximo y minimo (max/min del número de vulnerabilidades de un dispositivo que "participe" en una alerta)
+    maximos = grouped['vulnerabilidades_detectadas'].max()
+    minimos = grouped['vulnerabilidades_detectadas'].min()
+    print("\nLos maximos son:\n", maximos, "\nLos minimos son:\n", minimos)
+    
     
 
 con = sqlite3.connect("../database.db")
 
 giga_query_prioridad(con)
-#giga_query_meses(con)
+giga_query_meses(con)
