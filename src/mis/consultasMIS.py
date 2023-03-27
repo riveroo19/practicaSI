@@ -8,7 +8,7 @@ def loadDataframe(query,conn):
 
 def getTopIps():
     #CONEXION BASE DATOS
-    conn = sqlite3.connect("../database.db")
+    conn = sqlite3.connect("../../database.db")
     cursorObj = conn.cursor()
     dataframe = loadDataframe("SELECT origen FROM alertas where prioridad=1",conn)
     ips = dict()
@@ -25,7 +25,7 @@ def getTopIps():
 
 def getAlertsByCategory():
     #CONEXION BASE DATOS
-    conn = sqlite3.connect("../database.db")
+    conn = sqlite3.connect("../../database.db")
     cursorObj = conn.cursor()
     dataframe = loadDataframe("SELECT clasificacion FROM alertas",conn)
     alertas = dict()
@@ -38,7 +38,7 @@ def getAlertsByCategory():
 
 def getAlertsInTime():
     #CONEXION BASE DATOS
-    conn = sqlite3.connect("../database.db")
+    conn = sqlite3.connect("../../database.db")
     cursorObj = conn.cursor()
     dataframe = loadDataframe("SELECT timestamp FROM alertas",conn)
     serie = dict()
@@ -57,7 +57,7 @@ def getAlertsInTime():
 
 def getDispositivosVulnerables():
     #CONEXION BASE DATOS
-    conn = sqlite3.connect("../database.db")
+    conn = sqlite3.connect("../../database.db")
     cursorObj = conn.cursor()
     dataframe = loadDataframe("SELECT devices.id, analisis.servicios_inseguros, analisis.vulnerabilidades_detectadas FROM devices INNER JOIN analisis ON devices.id=analisis.id_device",conn)
     values = dict()
@@ -97,7 +97,7 @@ def mediaPuertosAbiertos(dataframePuertos):
 
 def getPuertosMetricas():
     #CONEXION BASE DATOS
-    conn = sqlite3.connect("../database.db")
+    conn = sqlite3.connect("../../database.db")
     cursorObj = conn.cursor()
     dataframe = loadDataframe("SELECT servicios_inseguros, servicios, puertos_abiertos FROM analisis",conn)
     servicios_inseguros = sum(list(dataframe['servicios_inseguros']))
