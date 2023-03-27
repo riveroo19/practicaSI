@@ -16,7 +16,7 @@ def sql_fetch_devices(cursorObj, tablename):
 con = sqlite3.connect("../database.db")
 cursorObj = con.cursor()
 
-sql_fetch_alertas(cursorObj)
+#sql_fetch_alertas(cursorObj)
 sql_fetch_devices(cursorObj, "responsible")
 sql_fetch_devices(cursorObj, "devices")
 sql_fetch_devices(cursorObj, "analisis")
