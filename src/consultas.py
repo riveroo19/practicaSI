@@ -42,6 +42,24 @@ def media_desviacion_PuertosAbiertos(dataframePuertos):
     varianza = acumulador / len(dataframePuertos)
     desviacion = math.sqrt(varianza)
     return media, desviacion
+
+#MEDIA Y DESVIACION ESTANDAR DEL NUMERO DE SERVICIOS INSEGUROS
+def media_desviacion_ServiciosInseguros(dataframeServicios):
+    contadorServiciosInseguros = 0
+    for i in range(0,len(dataframeServicios)):
+        nservicios = dataframeServicios['servicios_inseguros'][i]
+        contadorServiciosInseguros += nservicios
+    mediaServicios = contadorServiciosInseguros/len(dataframeServicios)
+
+    acumulador = 0
+    for i in range(0,len(dataframeServicios)):
+        nservicios = dataframeServicios['servicios_inseguros'][i]
+        acumulador += (nservicios - mediaServicios)**2
+    varianza = acumulador/len(dataframeServicios)
+    desviacion = math.sqrt(varianza)
+
+    return mediaServicios, desviacion
+
 #MEDIA Y DESVIACION ESTANDAR DEL NUMERO DE VULNERABILIDADES DETECTADAS
 def media_desviacion_VulnerabilidadesDetectadas(dataframeVulnerabilidades):
     contadorVulnerabilidades = 0
@@ -102,6 +120,12 @@ dataframeAnalisis = loadDataframe("SELECT puertos_abiertos FROM analisis",con)
 mediaPuertos, desviacionPuertos = media_desviacion_PuertosAbiertos(dataframeAnalisis)
 print("MEDIA PUERTOS ABIEROTS => " + str(mediaPuertos))
 print("DESVIACION ESTANDAR PUERTOS ABIEROTS => " + str(desviacionPuertos))
+
+#MEDIA Y DESVIACION DE SERVICIOS INSEGUROS
+dataframeServicios = loadDataframe("SELECT servicios_inseguros FROM analisis",con)
+mediaServicios, desviacionServicios = media_desviacion_ServiciosInseguros(dataframeServicios)
+print("MEDIA SERVICIOS INSEGUROS => " + str(mediaServicios))
+print("DESVIACION ESTANDAR SERVICIOS INSEGUROS => " + str(desviacionServicios))
 
 #MEDIA Y DESVIACION DE VULNERABILIDADES DETECTADAS
 dataframeVulnerabilidades = loadDataframe("SELECT vulnerabilidades_detectadas FROM analisis",con)
